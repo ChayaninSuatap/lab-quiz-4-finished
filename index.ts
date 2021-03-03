@@ -39,12 +39,12 @@ app.post('/login',
     const user = db.find(x => x.username === username)
 
     if (!user)
-      return res.status(400).send({
+      return res.status(400).json({
         message: 'Invalid username or password'
       })
 
     if (!bcrypt.compareSync(password, user.hashedPassword))
-      return res.status(400).send({
+      return res.status(400).json({
         message: 'Invalid username or password'
       })
 
@@ -55,7 +55,7 @@ app.post('/login',
       SECRET
     )
 
-    return res.send({
+    return res.json({
       message: 'Login succesfully',
       token
     })
@@ -78,7 +78,7 @@ app.post('/register',
 
     //validate
     if (db.filter(x => x.username === username).length > 0) {
-      res.status(400).send({
+      res.status(400).json({
         "message": "Username is already in used"
       })
       return
@@ -90,7 +90,7 @@ app.post('/register',
 
     db.push(account)
     console.log(db)
-    res.send({
+    res.json({
       message: "Register successfully"
     })
   })
@@ -105,17 +105,17 @@ app.get('/balance',
 
       //validate
       if (!account)
-        return res.status(400).send({
+        return res.status(400).json({
           "message": "Invalid username"
         })
       else
-        return res.send({
+        return res.json({
           "name": account.firstname + ' ' + account.lastname,
           "balance": account.balance
         })
     }
     catch (e) {
-      res.status(401).send({
+      res.status(401).json({
         message: "Invalid token"
       })
     }
@@ -137,18 +137,18 @@ app.post('/deposit',
 
       const account = db.find(x => x.username === username)
       if (!account)
-        return res.status(400).send({
+        return res.status(400).json({
           message: "Invalid username"
         })
 
       account.balance += amount
-      return res.send({
+      return res.json({
         message: "Deposit successfully",
         balance: account.balance
       })
     }
     catch (e) {
-      res.status(401).send({
+      res.status(401).json({
         message: "Invalid token"
       })
     }
@@ -169,7 +169,7 @@ app.post('/withdraw',
 
       const account = db.find(x => x.username === username)
       if (!account)
-        return res.status(400).send({
+        return res.status(400).json({
           message: "Invalid username"
         })
 
@@ -177,13 +177,13 @@ app.post('/withdraw',
         return res.status(400).json({ message: "Invalid data" })
 
       account.balance -= amount
-      return res.send({
+      return res.json({
         message: "Withdraw successfully",
         balance: account.balance
       })
     }
     catch (e) {
-      res.status(401).send({
+      res.status(401).json({
         message: "Invalid token"
       })
     }
@@ -207,7 +207,7 @@ app.post('/transferBalance',
       const receiver = db.find(x => x.username === receiverUsername)
 
       if (!sender || !receiver)
-        return res.status(400).send({
+        return res.status(400).json({
           message: "Invalid data"
         })
 
@@ -216,7 +216,7 @@ app.post('/transferBalance',
 
       sender.balance -= amount
       receiver.balance += amount
-      return res.send({
+      return res.json({
         message: "Transfer balance successfully",
         balance: {
           [sender.firstname + ' ' + sender.lastname]: sender.balance,
@@ -224,7 +224,7 @@ app.post('/transferBalance',
         }
       })
     } catch (e) {
-      res.status(401).send({
+      res.status(401).json({
         message: "Invalid token"
       })
     }
@@ -232,7 +232,7 @@ app.post('/transferBalance',
 
 app.delete('/reset', (req, res) => {
   db.splice(0, db.length)
-  return res.send({
+  return res.json({
     message: 'Reset database successfully'
   })
 })
