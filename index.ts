@@ -56,7 +56,7 @@ app.post('/login',
     )
 
     return res.json({
-      message: 'Login succesfully',
+      message: 'Login successfully',
       token
     })
 
